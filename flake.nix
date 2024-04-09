@@ -2,11 +2,21 @@
   description = "Game of life implemented with wgpu";
 
   inputs = {
-    nixpkgs.url = "github:nixpkgs/nixpkgs-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
   };
 
-  outputs = { self, nixpkgs }: {
-    packages.x86_64-linux.hello = nixpkgs.legacyPackages.x86_64-linux.hello;
-    packages.x86_64-linux.default = self.packages.x86_64-linux.hello;
-  };
+  outputs = { self, nixpkgs }:
+    let
+      system = "x86_64-linux";
+    in
+    {
+      packages.${system}.default = nixpkgs.legacyPackages.${system}.rustPlatform.buildRustPackage {
+        pname = "goofy";
+        version = "0.1.0";
+        src = self;
+        cargoLock = {
+          lockFile = ./Cargo.lock;
+        };
+      };
+    };
 }
