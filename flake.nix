@@ -22,6 +22,7 @@
       };
       libPath = with pkgs; lib.makeLibraryPath [
         libGL
+        vulkan-loader
         libxkbcommon
         wayland
         xorg.libX11
@@ -46,7 +47,7 @@
       devShells.${system}.default = pkgs.mkShell {
         packages = [ rust ];
         LD_LIBRARY_PATH = libPath;
-        RUST_LOG = "debug";
+        RUST_LOG = "info";
       };
     };
 }
