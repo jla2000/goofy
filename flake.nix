@@ -39,9 +39,8 @@
         cargoLock = {
           lockFile = ./Cargo.lock;
         };
-        nativeBuildInputs = [ pkgs.makeWrapper ];
-        postInstall = ''
-          wrapProgram $out/bin/prismatica --set LD_LIBRARY_PATH ${libPath}
+        postFixup = ''
+          patchelf --add-rpath ${libPath} $out/bin/prismatica
         '';
       };
       devShells.${system}.default = pkgs.mkShell {
