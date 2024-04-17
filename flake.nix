@@ -40,12 +40,13 @@
         };
         nativeBuildInputs = [ pkgs.makeWrapper ];
         postInstall = ''
-          wrapProgram $out/bin/prismatica --prefix LD_LIBRARY_PATH : ${libPath}
+          wrapProgram $out/bin/prismatica --set LD_LIBRARY_PATH ${libPath}
         '';
       };
       devShells.${system}.default = pkgs.mkShell {
         packages = [ rust ];
         LD_LIBRARY_PATH = libPath;
+        RUST_LOG = "debug";
       };
     };
 }
