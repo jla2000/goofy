@@ -41,14 +41,34 @@ async fn main() {
         .await
         .unwrap();
 
+    let mut config = surface
+        .get_default_config(
+            &adapter,
+            window.inner_size().width,
+            window.inner_size().height,
+        )
+        .unwrap();
+
+    surface.configure(&device, &config);
+
     event_loop
         .run(move |event, elwt| match event {
             Event::WindowEvent {
-                event: WindowEvent::CloseRequested,
+                event,
                 window_id: _,
-            } => {
-                elwt.exit();
-            }
+            } => match event {
+                WindowEvent::CloseRequested => {
+                    elwt.exit();
+                }
+                WindowEvent::Resized(physical_size) => {
+                    if physical_size.width > 0 && physical_size.height > 0 {
+                        config.width = physical_size.width;
+                        config.height = physical_size.height;
+                        surface.configure(&device, &config);
+                    }
+                }
+                _ => {}
+            },
             _ => {}
         })
         .unwrap();
